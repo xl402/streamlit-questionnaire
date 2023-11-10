@@ -16,7 +16,7 @@ def render_next_page_button(email):
 
 
 def email_entered_correctly(email):
-    if email is None or not _email_address_is_valid(email):
+    if email is None or not _email_address_is_valid(email.lower()):
         st.error("Please enter a valid email address")
         return False
     return True
