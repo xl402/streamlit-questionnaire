@@ -33,6 +33,7 @@ def get_sampled_questionnaire_data(session_state):
 
 
 def _get_sampled_questionnaire_data():
+    # inefficient? yes. but it's a demo
     df = pd.read_feather('data.ftr')
     raw_data = df.sample().to_dict(orient='records')[0]
     data = {
