@@ -18,8 +18,9 @@ def hide_navbar():
 
 if __name__ == '__main__':
     hide_navbar()
-    st.title("Welcome!")
-    st.write("This is the welcome screen.")
+    st.title("WIN 1 YEAR UNLIMITED MESSAGES!")
+    st.header("Help us to make AI that STAY in Character 😇")
+    st.title('4 questions, rank model responses based on how well they stay in character')
 
     if st.button("Next"):
         switch_page("enter_email")
