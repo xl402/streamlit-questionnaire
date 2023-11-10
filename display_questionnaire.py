@@ -4,12 +4,15 @@ from streamlit_sortables import sort_items
 import numpy as np
 
 
+GOAL_DESCRIPTION = "Please rank the AI responses based on how well it STAYS IN CHARACTER"
+
+
 def display_rank_questionnaire(data):
     st.write("**Character's persona:**")
     st.write(data.get('persona'))
     st.write("**Conversation history:**")
     st.write(data.get('convo_history'))
-    st.write("**Please rank responses (higher up is better)**")
+    st.write(f"**{GOAL_DESCRIPTION}** (Higher up is better)")
     sorted_items = sort_items(data.get('responses'), direction='vertical')
     return sorted_items
 
