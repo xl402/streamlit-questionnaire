@@ -7,4 +7,4 @@ email = st.text_input("Email")
 
 if email:  # You should add proper validation for the email format
     if st.button("Next"):
-        switch_page("questionnaire")
+        switch_page("questionnaire_1")
