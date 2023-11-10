@@ -15,6 +15,11 @@ def display_rank_questionnaire(data):
 
 
 def get_sampled_questionnaire_data(session_state):
+    """
+    Streamlit has session states that are persisted
+    In this case, we do not want a re-sampling whenever the widgets state changes
+    Hence we store them in unique session states as key-value pairs
+    """
     if session_state not in st.session_state:
         data = _get_sampled_questionnaire_data()
         st.session_state[session_state] = data
