@@ -1,7 +1,7 @@
-import streamlit as st
 from streamlit_sortables import sort_items
-
 import numpy as np
+import pandas as pd
+import streamlit as st
 
 
 GOAL_DESCRIPTION = "Please rank the AI responses based on how well it STAYS IN CHARACTER"
@@ -33,9 +33,11 @@ def get_sampled_questionnaire_data(session_state):
 
 
 def _get_sampled_questionnaire_data():
+    df = pd.read_feather('data.ftr')
+    raw_data = df.sample().to_dict(orient='records')[0]
     data = {
-        'persona': f'I am a {np.random.randint(100)} year old man',
-        'convo_history': f'Bot: {np.random.randint(100)} year old',
-        'responses': [str(np.random.randint(100)) for _ in range(3)]
+        'persona': raw_data['persona'],
+        'convo_history': raw_data['sampled_text'],
+        'responses': [raw_data[f'sample_response_{i}'] for i in range(1, 4)]
     }
     return data
