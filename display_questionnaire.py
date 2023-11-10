@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 
-GOAL_DESCRIPTION = "Please rank the AI responses based on how well it STAYS IN CHARACTER"
+GOAL_DESCRIPTION = "Please rank (drag and drop) the AI responses based on how well it STAYS IN CHARACTER"
 
 
 def display_rank_questionnaire(data):
@@ -12,7 +12,7 @@ def display_rank_questionnaire(data):
     st.write(data.get('persona'))
     st.write("**Conversation history:**")
     st.write(data.get('convo_history'))
-    st.write(f"**{GOAL_DESCRIPTION}**")
+    st.subheader(f"**{GOAL_DESCRIPTION}**")
     st.write('Higher up means better, bottom means worst')
     sorted_items = sort_items(data.get('responses'), direction='vertical')
     return sorted_items
