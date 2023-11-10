@@ -4,7 +4,6 @@ from streamlit_extras.switch_page_button import switch_page
 from display_questionnaire import display_rank_questionnaire, get_sampled_questionnaire_data
 
 st.title("Question 1 out of 4")
-st.subheader("Top is best, bottom is worst")
 
 data = get_sampled_questionnaire_data('data_1')
 

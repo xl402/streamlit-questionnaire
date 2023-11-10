@@ -12,7 +12,8 @@ def display_rank_questionnaire(data):
     st.write(data.get('persona'))
     st.write("**Conversation history:**")
     st.write(data.get('convo_history'))
-    st.write(f"**{GOAL_DESCRIPTION}** (Higher up is better)")
+    st.write(f"**{GOAL_DESCRIPTION}**")
+    st.write('Higher up means better, bottom means worst')
     sorted_items = sort_items(data.get('responses'), direction='vertical')
     return sorted_items
 
