@@ -11,6 +11,7 @@ chai_style.render_chai_style()
 
 st.title("Question 1 out of 4")
 
+st.divider()
 data = get_sampled_questionnaire_data('data_1')
 
 sorted_items = display_rank_questionnaire(data)
