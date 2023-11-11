@@ -9,12 +9,12 @@ def render_title(width, use_column_width=None):
             use_column_width=use_column_width,
             )
 
-
 def hide_navbar():
     # We don't want users going back and forward across pages
     no_sidebar_style = """
         <style>
             div[data-testid="stSidebarNav"] {display: none;}
+            div[data-testid="collapsedControl"] {display: none;}
         </style>
     """
     st.markdown(no_sidebar_style, unsafe_allow_html=True)
@@ -59,7 +59,7 @@ def next_button():
 
 
 def render_chai_style():
-    hide_navbar()
+    #hide_navbar()
     hide_top_bar()
     chai_bg_img()
     next_button()
