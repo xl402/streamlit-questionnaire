@@ -10,6 +10,7 @@ GOAL_DESCRIPTION = "Please rank (drag and drop) the AI responses based on how we
 def display_rank_questionnaire(data):
     st.write("**Character's persona:**")
     st.write(data.get('persona'))
+    st.divider()
     st.write("**Conversation history:**")
     st.write(data.get('convo_history'))
     st.subheader(f"**{GOAL_DESCRIPTION}**")

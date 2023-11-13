@@ -1,0 +1,21 @@
+[[pages]]
+path = "app.py"
+name = "Home Screen"
+
+[[pages]]
+path = "pages/enter_email.py"
+name = "Enter Email"
+
+[[pages]]
+path = "pages/questionnaire_1.py"
+name = "Question 1"
+icon = "✏️"
+
+[[pages]]
+path = "pages/questionnaire_2.py"
+name = "Question 2"
+icon = "✏️"
+
+[[pages]]
+path = "pages/end_screen.py"
+name = "End Screen"
