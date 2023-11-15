@@ -6,17 +6,21 @@ import streamlit as st
 
 
 GOAL_DESCRIPTION = "Please rank (drag and drop) the AI responses based on how well it STAYS IN CHARACTER"
+NUMBER_OF_QUESTIONS = 4
 
 def display_page(question_number):
     session_state = f'question_{question_number}'
-    st.title(f"Question {question_number} out of 4")
+    st.title(f"Question {question_number} out of {NUMBER_OF_QUESTIONS}")
     data = get_sampled_questionnaire_data(session_state)
     sorted_items = display_rank_questionnaire(data, session_state)
 
-    next_page = f'questionnaire_{question_number + 1}' if question_number < 4 else "end_screen"
+    if question_number < NUMBER_OF_QUESTIONS:
+        next_page = f'questionnaire_{question_number + 1}'
+    else:
+        next_page = "end_screen"
+
     if st.button("**Next**"):
         switch_page(next_page)
-
 
 
 def display_rank_questionnaire(data, session_state):
@@ -34,7 +38,6 @@ def display_rank_questionnaire(data, session_state):
 def log_answers(session_state):
     state = session_state.to_dict()
     #TODO: LOG ON GUANACO
-    breakpoint()
 
 
 def get_sampled_questionnaire_data(session_state):
