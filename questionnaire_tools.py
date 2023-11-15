@@ -8,10 +8,11 @@ import streamlit as st
 GOAL_DESCRIPTION = "Please rank (drag and drop) the AI responses based on how well it STAYS IN CHARACTER"
 NUMBER_OF_QUESTIONS = 4
 
+
 def display_page(question_number):
     session_state = f'question_{question_number}'
     st.title(f"Question {question_number} out of {NUMBER_OF_QUESTIONS}")
-    sorted_items = display_rank_questionnaire(session_state)
+    display_rank_questionnaire(session_state)
 
     if question_number < NUMBER_OF_QUESTIONS:
         next_page = f'questionnaire_{question_number + 1}'
@@ -33,7 +34,6 @@ def display_rank_questionnaire(session_state):
         st.write('Higher up means better, bottom means worse')
         sorted_items = sort_items(data.get('responses'), direction='vertical')
         st.session_state[session_state]['ordered_responses'] = sorted_items
-        return sorted_items
 
 
 def log_answers(session_state):
@@ -81,7 +81,7 @@ class QuestionBuilder:
         correct_response = row[f'sample_response_{np.random.randint(1, 4)}']
         responses = self._sample_responses(row['conversation_id'], n_responses=2)
         responses = np.random.permutation([correct_response] + responses)
-        return correct_response, responses
+        return correct_response, list(responses)
 
     def _sample_responses(self, convo_id_to_exclude, n_responses):
         ix = (self.df['conversation_id'] != convo_id_to_exclude).values
