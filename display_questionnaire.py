@@ -7,15 +7,21 @@ import streamlit as st
 GOAL_DESCRIPTION = "Please rank (drag and drop) the AI responses based on how well it STAYS IN CHARACTER"
 
 
-def display_rank_questionnaire(data):
+def display_rank_questionnaire(data, session_state):
     st.write("**Character's persona:**")
     st.write(data.get('persona'))
     st.write("**Conversation history:**")
     st.write(data.get('convo_history'))
     st.subheader(f"**{GOAL_DESCRIPTION}**")
-    st.write('Higher up means better, bottom means worst')
+    st.write('Higher up means better, bottom means worse')
     sorted_items = sort_items(data.get('responses'), direction='vertical')
+    st.session_state[session_state]['ordered_responses'] = sorted_items
     return sorted_items
+
+
+def log_answers(session_state):
+    state = session_state.to_dict()
+    #TODO: LOG ON GUANACO
 
 
 def get_sampled_questionnaire_data(session_state):
@@ -41,4 +47,5 @@ def _get_sampled_questionnaire_data():
         'convo_history': raw_data['sampled_text'],
         'responses': [raw_data[f'sample_response_{i}'] for i in range(1, 4)]
     }
+    data = {'persona': 'He is a bot', 'convo_history': 'yo', 'responses': ['A', 'B', 'C', 'D']}
     return data

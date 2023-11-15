@@ -13,6 +13,7 @@ def render_email_field():
 
 def render_next_page_button(email):
     if st.button("Next") and email_entered_correctly(email):
+        st.session_state['email'] = email
         switch_page("questionnaire_1")
 
 

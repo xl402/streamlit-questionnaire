@@ -9,12 +9,9 @@ chai_style.render_chai_style()
 
 st.title("Question 1 out of 4")
 
-data = get_sampled_questionnaire_data('data_1')
-
-sorted_items = display_rank_questionnaire(data)
-
-st.write(f'sorted_items: {sorted_items}')
-
+session_state = 'question_1'
+data = get_sampled_questionnaire_data(session_state)
+sorted_items = display_rank_questionnaire(data, session_state)
 
 if st.button("**Next**"):
     switch_page("questionnaire_2")
