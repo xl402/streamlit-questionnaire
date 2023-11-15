@@ -1,6 +1,6 @@
 import streamlit as st
 from pages import chai_style
-from display_questionnaire import log_answers
+from questionnaire_tools import log_answers
 
 chai_style.render_title(256)
 chai_style.render_chai_style()
