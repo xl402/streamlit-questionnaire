@@ -5,32 +5,21 @@ from streamlit_extras.switch_page_button import switch_page
 from pages import chai_style
 
 
-def render_email_field():
-    st.title("Enter your email address")
-    email = st.text_input("Email")
-    return email
+def render_user_id_field():
+    st.title("Enter your Chai user id")
+    st.write('Your chai user id can be found in the setting section of the Chai app.')
+    user_id = st.text_input("USER ID")
+    return user_id
 
 
-def render_next_page_button(email):
-    if st.button("Next") and email_entered_correctly(email):
-        st.session_state['email'] = email
+def render_next_page_button(user_id):
+    if st.button("Next"):
+        st.session_state['user_id'] = user_id
         switch_page("questionnaire_1")
-
-
-def email_entered_correctly(email):
-    if email is None or not _email_address_is_valid(email.lower()):
-        st.error("Please enter a valid email address")
-        return False
-    return True
-
-
-def _email_address_is_valid(email_address):
-   match = re.match(r"^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$", email_address)
-   return bool(match)
 
 chai_style.render_title(256)
 chai_style.render_chai_style()
 st.divider()
 
-email = render_email_field()
+email = render_user_id_field()
 render_next_page_button(email)

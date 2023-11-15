@@ -40,6 +40,51 @@ def log_answers(session_state):
     #TODO: LOG ON GUANACO
 
 
+class QuestionBuilder:
+
+    def __init__(self, number_of_questions=NUMBER_OF_QUESTIONS, data_path='data.ftr'):
+        self.number_of_questions = NUMBER_OF_QUESTIONS
+        self.df = pd.read_feather(data_path)
+
+
+    def build(self):
+        raw_data = self._load_sample()
+        captcha = np.random.randint(self.number_of_questions)
+        data = {}
+        for i, row in enumerate(raw_data):
+            is_captcha_question = captcha == i
+            data[f'questionnaire_{i + 1}'] = self._format(row, is_captcha_question)
+        return data
+
+    def _load_sample(self):
+        raw_data = self.df.sample(self.number_of_questions).to_dict(orient='records')
+        return raw_data
+
+    def _format(self, row, is_captcha_question):
+        responses = [row[f'sample_response_{i}'] for i in range(1, 4)]
+        if is_captcha_question:
+            correct = np.random.choice(responses)
+            convo_id = row['conversation_id']
+            random_responses= self._sample_responses(convo_id, n_responses=2)
+            responses = [correct] + random_responses
+
+        question = {
+            'conversation_id': row['conversation_id'],
+            'conversation': row['sampled_text'],
+            'responses': responses,
+            'captcha': is_captcha_question
+        }
+        return question
+
+    def _sample_responses(self, convo_id_to_exclude, n_responses):
+        ix = (self.df['conversation_id'] != convo_id_to_exclude).values
+        df = self.df[ix]
+        ns = np.random.randint(1, 4, n_responses)
+        df = df.sample(n_responses)
+        return [row[f'sample_response_{n}'] for n, (_, row) in zip(ns, df.iterrows())]
+
+
+
 def get_sampled_questionnaire_data(session_state):
     """
     Streamlit has session states that are persisted
@@ -63,5 +108,4 @@ def _get_sampled_questionnaire_data():
         'convo_history': raw_data['sampled_text'],
         'responses': [raw_data[f'sample_response_{i}'] for i in range(1, 4)]
     }
-    data = {'persona': 'He is a bot', 'convo_history': 'yo', 'responses': ['A', 'B', 'C', 'D']}
     return data
