@@ -38,6 +38,7 @@ def display_rank_questionnaire(session_state):
 
 def log_answers(session_state):
     state = session_state.to_dict()
+    breakpoint()
     #TODO: LOG ON GUANACO
 
 
@@ -64,22 +65,26 @@ class QuestionBuilder:
     def _format(self, row, is_captcha_question):
         responses = [row[f'sample_response_{i}'] for i in range(1, 4)]
         if is_captcha_question:
-            correct_response = np.random.choice(responses)
-            random_responses = self._sample_responses(row['conversation_id'], n_responses=2)
-            random_responses = [correct_response] + random_responses
-            correct_answer_position = np.random.randint(3)
-            responses = random_responses[:]
-            responses[correct_answer_position] = random_responses[0]
-            responses[0] = random_responses[correct_answer_position]
+            captcha, responses = self._generate_captcha_responses(row)
+        else:
+            captcha = ''
+            responses = [row[f'sample_response_{i}'] for i in range(1, 4)]
 
         question = {
             'conversation_id': row['conversation_id'],
             'persona': row['persona'],
             'conversation': row['sampled_text'],
             'responses': responses,
-            'captcha': 0 if not is_captcha_question else correct_answer_position
+            'captcha': captcha
         }
         return question
+
+    def _generate_captcha_responses(self, row):
+        responses = [row[f'sample_response_{i}'] for i in range(1, 4)]
+        correct_response = np.random.choice(responses)
+        responses = self._sample_responses(row['conversation_id'], n_responses=2)
+        responses = np.random.permutation([correct_response] + responses)
+        return correct_response, responses
 
     def _sample_responses(self, convo_id_to_exclude, n_responses):
         ix = (self.df['conversation_id'] != convo_id_to_exclude).values
@@ -87,29 +92,3 @@ class QuestionBuilder:
         ns = np.random.randint(1, 4, n_responses)
         df = df.sample(n_responses)
         return [row[f'sample_response_{n}'] for n, (_, row) in zip(ns, df.iterrows())]
-
-
-def get_sampled_questionnaire_data(session_state):
-    """
-    Streamlit has session states that are persisted
-    In this case, we do not want a re-sampling whenever the widgets state changes
-    Hence we store them in unique session states as key-value pairs
-    """
-    if session_state not in st.session_state:
-        data = _get_sampled_questionnaire_data()
-        st.session_state[session_state] = data
-    else:
-        data = st.session_state[session_state]
-    return data
-
-
-def _get_sampled_questionnaire_data():
-    # inefficient? yes. but it's a demo
-    df = pd.read_feather('data.ftr')
-    raw_data = df.sample().to_dict(orient='records')[0]
-    data = {
-        'persona': raw_data['persona'],
-        'convo_history': raw_data['sampled_text'],
-        'responses': [raw_data[f'sample_response_{i}'] for i in range(1, 4)]
-    }
-    return data

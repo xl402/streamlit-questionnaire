@@ -26,5 +26,5 @@ def test_data_sampler():
 
     # check there is only 1 captcha
     captchas = [x['captcha'] for x in out.values()]
-    assert sorted(captchas)[:3] == [0, 0, 0]
-    assert sorted(captchas)[-1] > 0
+    assert sorted(captchas)[:3] == [''] * 3
+    assert len(sorted(captchas)[-1]) > 0
