@@ -8,10 +8,10 @@ def test_data_sampler():
     sampler = QuestionBuilder(number_of_questions=4)
     out = sampler.build()
 
-    assert set(out.keys()) == {'questionnaire_1', 'questionnaire_2', 'questionnaire_3', 'questionnaire_4'}
+    assert set(out.keys()) == {'question_1', 'question_2', 'question_3', 'question_4'}
 
     for data in out.values():
-        assert data.keys() == {'conversation_id', 'conversation', 'responses', 'captcha'}
+        assert data.keys() == {'conversation_id', 'persona', 'conversation', 'responses', 'captcha'}
 
         ix = (df['conversation_id'] == data['conversation_id']).values
         row = df[ix].to_dict(orient='records')[0]
@@ -26,4 +26,5 @@ def test_data_sampler():
 
     # check there is only 1 captcha
     captchas = [x['captcha'] for x in out.values()]
-    assert sorted(captchas) == [False, False, False, True]
+    assert sorted(captchas)[:3] == [0, 0, 0]
+    assert sorted(captchas)[-1] > 0

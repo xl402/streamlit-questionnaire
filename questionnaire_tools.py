@@ -11,8 +11,7 @@ NUMBER_OF_QUESTIONS = 4
 def display_page(question_number):
     session_state = f'question_{question_number}'
     st.title(f"Question {question_number} out of {NUMBER_OF_QUESTIONS}")
-    data = get_sampled_questionnaire_data(session_state)
-    sorted_items = display_rank_questionnaire(data, session_state)
+    sorted_items = display_rank_questionnaire(session_state)
 
     if question_number < NUMBER_OF_QUESTIONS:
         next_page = f'questionnaire_{question_number + 1}'
@@ -23,16 +22,18 @@ def display_page(question_number):
         switch_page(next_page)
 
 
-def display_rank_questionnaire(data, session_state):
-    st.write("**Character's persona:**")
-    st.write(data.get('persona'))
-    st.write("**Conversation history:**")
-    st.write(data.get('convo_history'))
-    st.subheader(f"**{GOAL_DESCRIPTION}**")
-    st.write('Higher up means better, bottom means worse')
-    sorted_items = sort_items(data.get('responses'), direction='vertical')
-    st.session_state[session_state]['ordered_responses'] = sorted_items
-    return sorted_items
+def display_rank_questionnaire(session_state):
+    data = st.session_state.to_dict().get(session_state)
+    if data:
+        st.write("**Character's persona:**")
+        st.write(data.get('persona'))
+        st.write("**Conversation history:**")
+        st.write(data.get('conversation'))
+        st.subheader(f"**{GOAL_DESCRIPTION}**")
+        st.write('Higher up means better, bottom means worse')
+        sorted_items = sort_items(data.get('responses'), direction='vertical')
+        st.session_state[session_state]['ordered_responses'] = sorted_items
+        return sorted_items
 
 
 def log_answers(session_state):
@@ -53,7 +54,7 @@ class QuestionBuilder:
         data = {}
         for i, row in enumerate(raw_data):
             is_captcha_question = captcha == i
-            data[f'questionnaire_{i + 1}'] = self._format(row, is_captcha_question)
+            data[f'question_{i + 1}'] = self._format(row, is_captcha_question)
         return data
 
     def _load_sample(self):
@@ -63,16 +64,20 @@ class QuestionBuilder:
     def _format(self, row, is_captcha_question):
         responses = [row[f'sample_response_{i}'] for i in range(1, 4)]
         if is_captcha_question:
-            correct = np.random.choice(responses)
-            convo_id = row['conversation_id']
-            random_responses= self._sample_responses(convo_id, n_responses=2)
-            responses = [correct] + random_responses
+            correct_response = np.random.choice(responses)
+            random_responses = self._sample_responses(row['conversation_id'], n_responses=2)
+            random_responses = [correct_response] + random_responses
+            correct_answer_position = np.random.randint(3)
+            responses = random_responses[:]
+            responses[correct_answer_position] = random_responses[0]
+            responses[0] = random_responses[correct_answer_position]
 
         question = {
             'conversation_id': row['conversation_id'],
+            'persona': row['persona'],
             'conversation': row['sampled_text'],
             'responses': responses,
-            'captcha': is_captcha_question
+            'captcha': 0 if not is_captcha_question else correct_answer_position
         }
         return question
 
@@ -82,7 +87,6 @@ class QuestionBuilder:
         ns = np.random.randint(1, 4, n_responses)
         df = df.sample(n_responses)
         return [row[f'sample_response_{n}'] for n, (_, row) in zip(ns, df.iterrows())]
-
 
 
 def get_sampled_questionnaire_data(session_state):
