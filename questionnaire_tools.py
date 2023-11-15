@@ -38,7 +38,6 @@ def display_rank_questionnaire(session_state):
 
 def log_answers(session_state):
     state = session_state.to_dict()
-    breakpoint()
     #TODO: LOG ON GUANACO
 
 
@@ -63,7 +62,6 @@ class QuestionBuilder:
         return raw_data
 
     def _format(self, row, is_captcha_question):
-        responses = [row[f'sample_response_{i}'] for i in range(1, 4)]
         if is_captcha_question:
             captcha, responses = self._generate_captcha_responses(row)
         else:
@@ -80,8 +78,7 @@ class QuestionBuilder:
         return question
 
     def _generate_captcha_responses(self, row):
-        responses = [row[f'sample_response_{i}'] for i in range(1, 4)]
-        correct_response = np.random.choice(responses)
+        correct_response = row[f'sample_response_{np.random.randint(1, 4)}']
         responses = self._sample_responses(row['conversation_id'], n_responses=2)
         responses = np.random.permutation([correct_response] + responses)
         return correct_response, responses
